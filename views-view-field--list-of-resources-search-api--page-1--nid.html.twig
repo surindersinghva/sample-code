@@ -1,0 +1,124 @@
+{# Refer to Altarum Custom Form Module for Variables Output #}
+<div class="table-row">
+  <div class="table-cell w75">
+    <div class="views-field views-field-title">
+      <h2 class="tabindex">
+        {{ output.resource_card.title }}
+      </h2>
+    </div>
+    <div class="views-field views-field-field-resource-type">
+      <h3 class="tabindex">
+        {{ output.resource_card.resource_type }}
+      </h3>
+    </div>
+    <div class="views-field views-field-body">
+      <div
+        id="{{ output.resource_card.nid }}"
+        class="field-content tabindex resource-body"
+      >
+        {{ output.resource_card.body | raw }}
+      </div>
+      <p class="small">
+        <a id="{{ output.resource_card.nid }}" class="show-more" href="#">
+          Show more
+        </a>
+        <a id="{{ output.resource_card.nid }}" class="show-less" href="#">
+          Show less
+        </a>
+      </p>
+      {% if output.resource_card.resource_attachments is not empty or
+      output.resource_card.resource_topics is not empty %}
+      <div class="post_buttons">
+        <ul class="options-tabs">
+          {% if output.resource_card.resource_attachments is not empty %}
+          <li
+            class="tab-link tabindex"
+            data-tab="tab-{{ output.resource_card.nid }}-1"
+          >
+            <div
+              class="icon attachment"
+              id="postAttachments"
+              title="Attachments"
+            >
+              <i class="fa fa-paperclip" aria-hidden="true"></i>
+            </div>
+          </li>
+          {% endif %} {% if output.resource_card.resource_topics is not empty %}
+          <li
+            class="tab-link tabindex"
+            data-tab="tab-{{ output.resource_card.nid }}-2"
+          >
+            <div class="icon topics" id="postTopics" title="Topics">
+              <i class="fa fa-tags" aria-hidden="true"></i>
+            </div>
+          </li>
+          {% endif %} {% if output.resource_card.resource_states is not empty %}
+          <li
+            class="tab-link tabindex"
+            data-tab="tab-{{ output.resource_card.nid }}-3"
+          >
+            <div class="icon states" id="postStates" title="States">
+              <i class="fa fa-map-marked" aria-hidden="true"></i>
+            </div>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+      {% if output.resource_card.resource_attachments is not empty %}
+      <div
+        id="tab-{{ output.resource_card.nid }}-1"
+        class="options-tab-content"
+      >
+        <div class="small">
+          <strong>Attachments</strong>
+        </div>
+        {% for attachment in output.resource_card.resource_attachments %}
+        <div class="small">
+          <a
+            data-id="{{ attachment.fid }}"
+            data-type="fid"
+            class="content-viewed"
+            href="{{ attachment.path }}"
+          >
+            {{ attachment.file_name }}
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %} {% if output.resource_card.resource_topics is not empty %}
+      <div
+        id="tab-{{ output.resource_card.nid }}-2"
+        class="options-tab-content"
+      >
+        <div class="small">
+          <strong>Topics</strong>
+        </div>
+        {% for topic in output.resource_card.resource_topics %}
+        <div class="small">
+          {{ topic }}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %} {% endif %}
+    </div>
+  </div>
+  <div class="table-cell w25">
+    <div class="action-buttons">
+      {{ output.like_form }}
+      {{ output.fav_form }}
+    </div>
+    {% if output.resource_card.website_link is not empty %}
+    <div class="view-button">
+      <a
+        href="{{ output.resource_card.website_link }}"
+        data-id="{{ output.resource_card.nid }}"
+        data-type="nid"
+        class="content-viewed btn btn-rounded continue-link"
+        target="_blank"
+      >
+        {{ output.resource_card.website_title }}
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</div>

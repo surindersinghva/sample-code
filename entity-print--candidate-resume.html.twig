@@ -1,0 +1,369 @@
+<html>
+	<head>
+		<meta charset='utf-8'/>
+		<title>{{ title }}</title>
+		<style>
+			body {
+				font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+			}
+
+			#resume {
+				width: 100%;
+				padding-right: 1rem;
+			}
+			#header {
+				width: 100%;
+				padding-bottom: 0.5rem;
+				border-bottom: 1px solid #ccc;
+				margin-bottom: 1.2rem;
+			}
+			#header th {
+				vertical-align: bottom;
+			}
+			#header th:first-child {
+				text-align: left;
+			}
+			#header th:last-child {
+				text-align: right;
+			}
+			#content {
+				display: block;
+				height: 100%;
+			}
+			#content .personal-info,
+			#content .work-info {
+				width: 100%;
+			}
+			#content .personal-info .card {
+				display: inline-block;
+				width: 30%;
+				vertical-align: top;
+				margin-right: 1.2rem;
+			}
+			#content .work-info .card {
+				display: block;
+				width: 100%;
+				margin-bottom: 1.2rem;
+				border-bottom: 1px solid #ccc;
+				text-align: left;
+			}
+
+			/* Typography */
+			h1,
+			h2,
+			h3,
+			h4,
+			h5,
+			h6 {
+				padding: 0;
+				margin: 0 0 1rem;
+			}
+			h1 {
+				font-size: 1.4rem;
+			}
+			h3 {
+				font-size: 1.2rem;
+			}
+			h5 {
+				margin-top: 1.2rem;
+				font-size: 0.9rem;
+			}
+			h6 {
+				font-size: 0.8rem;
+				font-weight: 300;
+			}
+			li,
+			p {
+				padding: 0;
+				margin: 0 0 1rem;
+				font-size: 0.8rem;
+				line-height: 1.4rem;
+			}
+			#header p {
+				font-weight: 400;
+			}
+
+			/* Lists */
+			ul,
+			ol {
+				margin: 0;
+				padding: 0 0 1rem 1rem;
+			}
+			ul {
+				list-style-type: square;
+			}
+			li {
+				margin-bottom: 0.25rem;
+			}
+			.link-list {
+				list-style: none;
+				padding: 0 0 1rem;
+			}
+			.link-list a {
+				color: #000;
+				font-size: 0.8rem;
+				line-height: 1.4rem;
+			}
+			.services-list {
+				clear: both;
+				padding: 0.5rem 0 0 1rem;
+			}
+			.services-list p {
+				display: inline-block;
+				width: 48.5%;
+			}
+		</style>
+		{{
+      entity_print_css
+    }}
+	</head>
+	<body>
+		<div
+			id='resume'>
+			{# HEADER #}
+			<table id='header'>
+				<thead>
+					<tr>
+						<th>
+							<h1>
+								{{ user_profile.account.field_first_name }}
+								{{ user_profile.account.field_last_name }}
+							</h1>
+							<p>
+								{{ user_profile.account.email }}
+							</p>
+						</th>
+						<th>
+							<p>
+								Last updated:
+								{{ last_updated }}
+							</p>
+						</th>
+					</tr>
+				</thead>
+			</table>
+
+			{# MAIN #}
+			<main
+				id='content'>
+				{# WORK INFORMATION #}
+				<div class='work-info'>
+					{% if user_profile.documents.field_please_add_any_other_infor is not empty %}
+						<div class='card'>
+							<h4>About Me</h4>
+							<p>
+								{{ user_profile.documents.field_please_add_any_other_infor | raw }}
+							</p>
+						</div>
+					{% endif %}
+
+					{% if user_profile.technical_qualification is not empty %}
+						<div class='card'>
+							<h4>Technical Qualificaitions</h4>
+							<ul>
+								{% for item in user_profile.technical_qualification %}
+									<p>-
+										{{ item }}</p>
+								{% endfor %}
+							</ul>
+						</div>
+					{% endif %}
+
+					{% if user_profile.additional_trainings is not empty %}
+						<div class='card'>
+							<h4>Trainings</h4>
+							<ul>
+								{% for item in user_profile.additional_trainings %}
+									<p>-
+										{{ item.field_name_of_training }}</p>
+								{% endfor %}
+							</ul>
+						</div>
+					{% endif %}
+
+					{% if user_profile.education.field_my_education.0.field_highest_degree is not empty %}
+						<div class='card'>
+							<h4>Degree/Certificate</h4>
+							<p>{{ user_profile.education.field_my_education.0.field_highest_degree }}</p>
+						</div>
+					{% endif %}
+
+					{% if user_profile.type_of_services is not empty 
+						or user_profile.work_experience.field_my_work_experience is not empty %}
+						<div class='card'>
+							<h4>Work Experience</h4>
+
+							{% if user_profile.type_of_services is not empty %}
+								<h5>Type of Services</h5>
+								<div class='services-list'>
+									{% for item in user_profile.type_of_services %}
+										<p>-
+											{{ item }}</p>
+									{% endfor %}
+								</div>
+							{% endif %}
+
+							{% if user_profile.work_experience.field_my_work_experience is not empty %}
+								<h5>Employment</h5>
+								{% for item in user_profile.work_experience.field_my_work_experience %}
+									{% if item.field_name_of_the_employer is not empty %}
+										<p>
+											<strong>Employer:</strong>
+											{{ item.field_name_of_the_employer }}
+										</p>
+									{% endif %}
+
+									{% if item.field_position_role is not empty %}
+										<p>
+											<strong>Position/Role:</strong>
+											{{ item.field_position_role }}
+										</p>
+									{% endif %}
+
+									{% if item.field_date_started is not empty %}
+										<p>
+											<strong>From:</strong>
+											{{ item.field_date_started }}<br/>
+											<strong>To:</strong>
+											{{ item.field_date_ended }}
+											{{ item.field_present }}<br/>
+										</p>
+									{% endif %}
+
+									{% if item.field_core_responsibilities is not empty %}
+										{# <h5></h5> #}
+										<p>
+											<strong>Additional Responsibilities (in this role)</strong>
+											<br/>
+											{{ item.field_core_responsibilities | raw }}
+										</p>
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+						</div>
+					{% endif %}
+
+					<div class='card'>
+						<h4>Work Preferences</h4>
+						<p>
+							<strong>Can provide support for:</strong>
+							{% set i_can_provide_support_for =
+								user_profile.preferences.field_i_can_provide_support_for | join(', ') %}
+							{{ i_can_provide_support_for }}
+						</p>
+
+						<p>
+							<strong>Willing to work in an environment with:</strong>
+							{% set willing_to_work_in =
+								user_profile.preferences.field_are_you_willing_to_work_in | join(', ') %}
+							{{ willing_to_work_in }}
+						</p>
+
+						<h5>Service Schedule</h5>
+						<p>
+							<strong>Days of the Week:</strong>
+							{% set service_weekdays =
+								user_profile.preferences.field_service_weekdays | join(', ') %}
+							{{ service_weekdays }}
+						</p>
+						<p>
+							<strong>Shifts:</strong>
+							{% set shifts_needed =
+								user_profile.preferences.field_select_shifts_needed | join(', ') %}
+							{{ shifts_needed }}
+						</p>
+						<p>
+							<strong>Pay Scale From:
+							</strong>
+							${{ user_profile.preferences.field_rate_of_pay }}
+							per hour
+						</p>
+					</div>
+				</div>
+
+				{# PERSONAL INFORMATION #}
+				<div class='personal-info'>
+					{% if user_profile.preferences.field_availability is not empty %}
+						<div class='card'>
+							<h4>Availability</h4>
+							<p>
+								{% set availability =
+									user_profile.preferences.field_availability | join(', ') %}
+								{{ availability }}
+							</p>
+						</div>
+					{% endif %}
+
+					{% if user_profile.work_experience.field_my_work_experience.0.field_position_role is not empty %}
+						<div class='card'>
+							<h4>Position/Role</h4>
+							<p>
+								{{ user_profile.work_experience.field_my_work_experience.0.field_position_role }}
+							</p>
+						</div>
+					{% endif %}
+
+					{% if user_profile.years_of_experience is not empty %}
+						<div class='card'>
+							<h4>Years of Experience</h4>
+							<p>{{ user_profile.years_of_experience }}</p>
+						</div>
+					{% endif %}
+				</div>
+
+				<div class='personal-info'>
+					{% if user_profile.personal_information.field_city is not empty
+						and user_profile.personal_information.field_state is not empty %}
+						<div class='card'>
+							<h4>Location</h4>
+							<p>
+								{{ user_profile.personal_information.field_city }},
+								{{ user_profile.personal_information.field_state }}
+							</p>
+						</div>
+					{% endif %}
+
+					{% if user_profile.personal_information.field_languages is not empty %}
+						<div class='card'>
+							<h4>Languages</h4>
+							<p>
+								{{ user_profile.personal_information.field_languages }}
+							</p>
+						</div>
+					{% endif %}
+
+					{% if user_profile.documents.field_upload_a_resume is not empty
+						or user_profile.documents.field_upload_a_cover_letter is not empty 
+						or user_profile.documents.field_upload_a_reference_letter is not empty %}
+						<div class='card'>
+							<h4>Documents</h4>
+							<ul class='link-list'>
+								{% if user_profile.documents.field_upload_a_resume is not
+									empty %}
+									<li>
+										<a href="{{ user_profile.documents.field_upload_a_resume }}">Resume</a>
+									</li>
+								{% endif %}
+
+								{% if user_profile.documents.field_upload_a_cover_letter is
+									not empty %}
+									<li>
+										<a href="{{ user_profile.documents.field_upload_a_cover_letter }}">Cover Letter</a>
+									</li>
+								{% endif %}
+
+								{% if user_profile.documents.field_upload_a_reference_letter is not empty %}
+									<li>
+										<a href="{{ user_profile.documents.field_upload_a_reference_letter }}">Reference Letter</a>
+									</li>
+								{% endif %}
+							</ul>
+						</div>
+					{% endif %}
+				</div>
+			</main>
+		</div>
+	</body>
+</html>
+
+{# </tr></tbody></td></body></html></tr></tbody></table></body> </html> #}

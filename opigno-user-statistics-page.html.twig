@@ -1,0 +1,545 @@
+{% if user_info.user_profile.account.role == 'Tier1' %}
+    <div class="content-box user-card">
+        <div class="rows">
+            <div class="cols cols-lg-4 cols-md-6 cols-sm-12">
+                <div class="user-img">
+                    {{ user_info.picture }}
+                </div>
+                <h2>{{ user_info.name }}</h2>
+                {% if user_info.user_profile.account.field_user_title is not empty %}
+                    {{ user_info.user_profile.account.field_user_title }}
+                {% endif %}
+                {% if user_info.user_profile.account.role == 'Tier1' %}
+                    <br />
+                    <br />
+                    <p>
+                        <strong>
+                            <a title="Download Resume (PDF)" href="/generate-resume/{{ user_info.user_profile.account.uid }}">
+                                My Resume <i class="fa-solid fa-file-pdf"></i>
+                            </a>
+                        </strong>
+                    </p>
+                {% endif %}
+            </div>
+            <div class="cols cols-lg-8 cols-md-6 cols-sm-12">
+                <div class="rows">
+                    <div class="cols cols-lg-6 cols-md-6 cols-sm-12 content-inner">
+                        <p class="label">Position/Role</p>
+                        {% if user_info.user_profile.work_experience.field_my_work_experience.0.field_position_role is not empty %}
+                            <p>
+                                {{ user_info.user_profile.work_experience.field_my_work_experience.0.field_position_role }}
+                            </p>
+                        {% else %}
+                            <p>&nbsp;</p>
+                        {% endif %}
+                        <p class="label">Years of Experience</p>
+                        <p>
+                            {{ user_info.user_profile.years_of_experience }}
+                        </p>
+                    </div>
+                    <div class="cols cols-lg-6 cols-md-6 cols-sm-12 content-inner">
+                        <p class="label">Availability</p>
+                        {% if user_info.user_profile.preferences.field_availability is not empty %}
+                            {% set availability = user_info.user_profile.preferences.field_availability | join(', ') %}
+                            <p>{{ availability }}</p>
+                        {% else %}
+                            <p>&nbsp;</p>
+                        {% endif %}
+                        <p class="label">City</p>
+                        <p>
+                            {{ user_info.user_profile.personal_information.field_city }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if user_info.user_profile.account.field_program_state is not empty and user_info.user_profile.account.field_program_state == '13' %}
+            <div class="rows">
+                <div class="cols cols-lg-12 cols-md-12 cols-sm-12">
+                    {% if user_info.data %}
+                        <div class="rows">
+                            <div class="user-info__section-bottom">
+                                {% for achievement in user_info.data.achievements %}
+                                    <div class="cols cols-lg-6 cols-md-12 cols-sm-12 content-inner">
+                                        {{ achievement }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    {% if user_info.user_profile.credentialing_applications is not empty %}
+        <div class="content-box user-card">
+            <div class="rows">
+                <div class="cols cols-lg-6 cols-md-12 cols-sm-12">
+                    <h2>Credentialing Applications</h2>
+                    {% for application in user_info.user_profile.credentialing_applications %}
+                        <h4>
+                            <a href="{{ application.path }}">{{ application.title }}</a>
+                        </h4>
+                        <p>Application Status: {{ application.application_status }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    {% if user_info.potential_matches is not empty %}
+        <div class="view-list-of-job-postings-search-api">
+            <h2>Potential Jobs</h2>
+            {% for match in user_info.potential_matches %}
+                {{ drupal_entity("node", match.jid, "job_card") }}
+            {% endfor %}
+        </div>
+    {% endif %}
+    <div class="content-box user-card">
+        <div class="rows">
+            <div class="cols cols-lg-6 cols-md-12 cols-sm-12">
+                <h2>My Bookmarks</h2>
+                {% if user_info.user_profile.bookmarks is not empty %}
+                    {% for type, bookmarks in user_info.user_profile.bookmarks %}
+                        <h4>{{ type }}</h4>
+                        {% for bookmark in bookmarks %}
+                            <a href="{{ bookmark.path }}">{{ bookmark.title }}</a>
+                            <br />
+                        {% endfor %}
+                        <br />
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="cols cols-lg-6 cols-md-12 cols-sm-12">
+                <h2>My Favorites</h2>
+                {% if user_info.user_profile.likes is not empty %}
+                    {% for type, likes in user_info.user_profile.likes %}
+                        <h4>{{ type }}</h4>
+                        {% for like in likes %}
+                            <a href="{{ like.path }}">{{ like.title }}</a>
+                            <br />
+                        {% endfor %}
+                        <br />
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% if user_info.user_profile.account.field_program_state is not empty and user_info.user_profile.account.field_program_state == '13' %}
+        {# Trainings list. #}
+        {% if trainings is not empty %}
+            <div class="content-box trainings-list">
+                <h2>{{ "Trainings" | t }}</h2>
+                <div class="trainings-list-wrapper">
+                    {{ trainings }}
+                </div>
+            </div>
+        {% endif %}
+        {# Trends and charts. #}
+        {% if stats is not empty %}
+            <div class="content-box profile-trends">
+                <h2>{{ "Trends" | t }}</h2>
+                <div class="profile-info">
+                    <div class="profile-info__statistics">
+                        <div class="filter">
+                            <select name="filterRange" id="filterRange" class="form-select selectpicker">
+                                <option value="7">{{ "Last 7 days" | t }}</option>
+                                <option value="30">{{ "Last 30 days" | t }}</option>
+                            </select>
+                        </div>
+                        {{ stats.trends }}
+                    </div>
+                    {{ stats.charts }}
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+{% endif %}
+{% if user_info.user_profile.account.role == 'Tier11' %}
+    <div class="content-box user-card">
+        <div class="rows">
+            <div class="cols cols-lg-4 cols-md-6 cols-sm-12">
+                <div class="user-img">
+                    {{ user_info.picture }}
+                </div>
+                <h2>{{ user_info.name }}</h2>
+            </div>
+            <div class="cols cols-lg-8 cols-md-6 cols-sm-12">
+                <div class="rows">
+                    <div class="cols cols-lg-6 cols-md-12 cols-sm-12 content-inner">
+                        <p class="label">Email Address</p>
+                        {% if user_info.user_profile.account.email is not empty %}
+                            <p>
+                                {{ user_info.user_profile.account.email }}
+                            </p>
+                        {% else %}
+                            <p>&nbsp;</p>
+                        {% endif %}
+                        <p class="label">City & Zip Code</p>
+                        <p>
+                            {{ user_info.user_profile.account.field_city }}
+                        </p>
+                    </div>
+                    <div class="cols cols-lg-6 cols-md-12 cols-sm-12 content-inner">
+                        <p class="label">Phone Number</p>
+                        {% if user_info.user_profile.account.field_phone is not empty %}
+                            <p>
+                                {{ user_info.user_profile.account.field_phone }}
+                            </p>
+                        {% else %}
+                            <p>&nbsp;</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content-box user-card">
+        <div class="rows">
+            <div class="cols cols-lg-6 cols-md-12 cols-sm-12">
+                <h2>My Bookmarks</h2>
+                {% if user_info.user_profile.bookmarks is not empty %}
+                    {% for type, bookmarks in user_info.user_profile.bookmarks %}
+                        <h4>{{ type }}</h4>
+                        {% for bookmark in bookmarks %}
+                            <a href="{{ bookmark.path }}">{{ bookmark.title }}</a>
+                            <br />
+                        {% endfor %}
+                        <br />
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="cols cols-lg-6 cols-md-12 cols-sm-12">
+                <h2>My Favorites</h2>
+                {% if user_info.user_profile.likes is not empty %}
+                    {% for type, likes in user_info.user_profile.likes %}
+                        <h4>{{ type }}</h4>
+                        {% for like in likes %}
+                            <a href="{{ like.path }}">{{ like.title }}</a>
+                            <br />
+                        {% endfor %}
+                        <br />
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% if user_info.user_profile.account.role == 'Tier2' %}
+    <div class="content-box user-card">
+        <div class="rows">
+            <div class="cols cols-lg-4 cols-md-6 cols-sm-12">
+                <div class="user-img">
+                    {{ user_info.picture }}
+                </div>
+                <h2>{{ user_info.name }}</h2>
+            </div>
+            <div class="cols cols-lg-8 cols-md-6 cols-sm-12">
+                {% if user_info.user_profile.account.field_program_state is not empty and user_info.user_profile.account.field_program_state == '13' %}
+                    {% set label1 = 'CDASS Employer Name' %}
+                    {% set label2 = 'CDASS Employer Email Address' %}
+                    {% set label3 = 'CDASS Employer City & Zip' %}
+                {% else %}
+                    {% set label1 = 'CDS Employer Name' %}
+                    {% set label2 = 'CDS Employer Email Address' %}
+                    {% set label3 = 'CDS Employer City & Zip' %}
+                {% endif %}
+                <div class="rows">
+                    <div class="cols cols-lg-6 cols-md-12 cols-sm-12 content-inner">
+                        <p class="label">{{ label1 }}</p>
+                        {% if user_info.user_profile.business_information.field_cds_provider_s_first_name is not empty %}
+                            <p>
+                                {{ user_info.user_profile.business_information.field_cds_provider_s_first_name }}
+                            </p>
+                        {% else %}
+                            <p>&nbsp;</p>
+                        {% endif %}
+                        <p class="label">{{ label2 }}</p>
+                        <p>
+                            {{ user_info.user_profile.business_information.field_cds_provider_s_email_addre }}
+                        </p>
+                    </div>
+                    <div class="cols cols-lg-6 cols-md-12 cols-sm-12 content-inner">
+                        <p class="label">{{ label3 }}</p>
+                        {% if user_info.user_profile.business_information.field_city is not empty %}
+                            <p>
+                                {{ user_info.user_profile.business_information.field_city }} - {{ user_info.user_profile.business_information.field_zip_code }}
+                            </p>
+                        {% else %}
+                            <p>&nbsp;</p>
+                        {% endif %}
+                        <p class="label">Quick links</p>
+                        <strong>
+                            <a class="btn btn-rounded" title="Add Job Post" href="/node/add/self_directed_job_post">
+                                Add Job Post
+                            </a>
+                            <br />
+                        </strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content-box user-card">
+        <div class="rows">
+            <div class="cols cols-lg-6 cols-md-12 cols-sm-12">
+                <h2>My Bookmarks</h2>
+                {% if user_info.user_profile.bookmarks is not empty %}
+                    {% for type, bookmarks in user_info.user_profile.bookmarks %}
+                        <h4>{{ type }}</h4>
+                        {% for bookmark in bookmarks %}
+                            <a href="{{ bookmark.path }}">{{ bookmark.title }}</a>
+                            <br />
+                        {% endfor %}
+                        <br />
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="cols cols-lg-6 cols-md-12 cols-sm-12">
+                <h2>My Favorites</h2>
+                {% if user_info.user_profile.likes is not empty %}
+                    {% for type, likes in user_info.user_profile.likes %}
+                        <h4>{{ type }}</h4>
+                        {% for like in likes %}
+                            <a href="{{ like.path }}">{{ like.title }}</a>
+                            <br />
+                        {% endfor %}
+                        <br />
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% if user_info.user_profile.account.role == 'Tier21' or user_info.user_profile.account.role == 'Tier3' %}
+    <div class="content-box user-card">
+        <div class="rows">
+            <div class="cols cols-lg-4 cols-md-6 cols-sm-12">
+                <div class="user-img">
+                    {{ user_info.picture }}
+                </div>
+                <h2>{{ user_info.name }}</h2>
+            </div>
+            <div class="cols cols-lg-8 cols-md-6 cols-sm-12">
+                <div class="rows">
+                    <div class="cols cols-lg-6 cols-md-12 cols-sm-12 content-inner">
+                        <p class="label">Employer's Name</p>
+                        <p>
+                            {{ user_info.user_profile.provider_information.title }}
+                        </p>
+                        <p class="label">Employer's Email Address</p>
+                        <p>
+                            {{ user_info.user_profile.provider_information.field_provider_email }}
+                        </p>
+                    </div>
+                    <div class="cols cols-lg-6 cols-md-12 cols-sm-12 content-inner">
+                        <p class="label">Employer's City & Zip</p>
+                        {% if user_info.user_profile.provider_information.field_city is not empty %}
+                            <p>
+                                {{ user_info.user_profile.provider_information.field_city }} - {{ user_info.user_profile.provider_information.field_zip_code }}
+                            </p>
+                        {% else %}
+                            <p>&nbsp;</p>
+                        {% endif %}
+                        <p class="label">Quick links</p>
+                        <strong>
+                            <a class="btn btn-rounded" title="Add Job Post" href="/node/add/job_post">
+                                Add Job Post
+                            </a>
+                            <br />
+                            <br />
+                            <a class="btn btn-rounded" title="Add Job Post" href="/node/add/job_post_template">
+                                Add Job Post Template
+                            </a>
+                            <br />
+                        </strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if user_info.user_profile.providers is not empty %}
+        <div class="content-box user-card">
+            <div class="rows">
+                <div class="cols cols-lg-12 cols-md-12 cols-sm-12">
+                    <h2>Manage Employer Profile(s)</h2>
+                    <p>
+                        Click on the employer's name or the edit link below to update the employer information, account manager, and to add branches/locations.
+                    </p>
+                    {% for eid, profile in user_info.user_profile.providers %}
+                        {% for location in profile %}
+                            <div class="content-box">
+                                <a href="{{ location.url | raw }}">
+                                    {{ location.title }}
+                                </a>
+                                <br />
+                                {{ location.id_number }}
+                                <br />
+                                {{ location.email }}
+                                <br />
+                                {{ location.city }}
+                                <br />
+                                {{ location.zip_code }}
+                                <br />
+                                <a href="{{ location.url | raw }}">Edit</a>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div class="content-box user-card">
+        <div class="rows">
+            <div class="cols cols-lg-6 cols-md-12 cols-sm-12">
+                <h2>My Bookmarks</h2>
+                {% if user_info.user_profile.bookmarks is not empty %}
+                    {% for type, bookmarks in user_info.user_profile.bookmarks %}
+                        <h4>{{ type }}</h4>
+                        {% for bookmark in bookmarks %}
+                            <a href="{{ bookmark.path }}">{{ bookmark.title }}</a>
+                            <br />
+                        {% endfor %}
+                        <br />
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="cols cols-lg-6 cols-md-12 cols-sm-12">
+                <h2>My Favorites</h2>
+                {% if user_info.user_profile.likes is not empty %}
+                    {% for type, likes in user_info.user_profile.likes %}
+                        <h4>{{ type }}</h4>
+                        {% for like in likes %}
+                            <a href="{{ like.path }}">{{ like.title }}</a>
+                            <br />
+                        {% endfor %}
+                        <br />
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% if user_info.user_profile.account.role == 'Tier4' or user_info.user_profile.account.role == 'Tier5' or user_info.user_profile.account.role == 'Tier6' or user_info.user_profile.account.role == 'Tier7' or user_info.user_profile.account.role == 'Tier8' %}
+    <div class="content-box user-card">
+        <div class="rows">
+            <div class="cols cols-lg-4 cols-md-6 cols-sm-12">
+                <div class="user-img">
+                    {{ user_info.picture }}
+                </div>
+                <h2>{{ user_info.name }}</h2>
+            </div>
+            {% if user_info.dashboard_numbers is not empty %}
+                <div class="cols cols-lg-8 cols-md-12 cols-sm-12">
+                    <div class="rows">
+                        <div class="cols cols-lg-6 cols-md-12 cols-sm-12 content-inner">
+                            <div class='dash-stats'>
+                                <div class='dash-stat-card'>
+                                    <div class='dash-stat-number'>
+                                        {{ user_info.dashboard_numbers.0.number }}
+                                    </div>
+                                    <div class='dash-stat-label'>
+                                        {{ user_info.dashboard_numbers.0.label }}
+                                    </div>
+                                </div>
+                                <div class='dash-stat-card'>
+                                    <div class='dash-stat-number'>
+                                        {{ user_info.dashboard_numbers.1.number }}
+                                    </div>
+                                    <div class='dash-stat-label'>
+                                        {{ user_info.dashboard_numbers.1.label }}
+                                    </div>
+                                </div>
+                                <div class='dash-stat-card'>
+                                    <div class='dash-stat-number'>
+                                        {{ user_info.dashboard_numbers.2.number }}
+                                    </div>
+                                    <div class='dash-stat-label'>
+                                        {{ user_info.dashboard_numbers.2.label }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cols cols-lg-6 cols-md-12 cols-sm-12 content-inner">
+                            <div class='dash-stats'>
+                                <div class='dash-stat-card'>
+                                    <div class='dash-stat-number'>
+                                        {{ user_info.dashboard_numbers.3.number }}
+                                    </div>
+                                    <div class='dash-stat-label'>
+                                        {{ user_info.dashboard_numbers.3.label }}
+                                    </div>
+                                </div>
+                                <div class='dash-stat-card'>
+                                    <div class='dash-stat-number'>
+                                        {{ user_info.dashboard_numbers.4.number }}
+                                    </div>
+                                    <div class='dash-stat-label'>
+                                        {{ user_info.dashboard_numbers.4.label }}
+                                    </div>
+                                </div>
+                                <div class='dash-stat-card'>
+                                    <div class='dash-stat-number'>
+                                        {{ user_info.dashboard_numbers.5.number }}
+                                    </div>
+                                    <div class='dash-stat-label'>
+                                        {{ user_info.dashboard_numbers.5.label }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% if user_info.dashboard_numbers is not empty %}
+        <div class="content-box user-card">
+            <div class="rows">
+                <div class="cols cols-lg-12 cols-md-12 cols-sm-12">
+                    <h2>Candidates vs. number of positions available</h2>
+                    {{ user_info.chart1 }}
+					<div id="candidate_vs_jobpost"></div>
+                </div>
+            </div>
+        </div>
+        <div class="content-box user-card">
+            <div class="rows">    
+                <div class="cols cols-lg-12 cols-md-12 cols-sm-12">
+                    <h2>Number of Auto-matched candidates for each job post</h2>
+                    {{ user_info.chart2 }}
+                    <div id="jobposts_automatchcandidates"></div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div class="content-box user-card">
+        <div class="rows">
+            <div class="cols cols-lg-6 cols-md-12 cols-sm-12">
+                <h2>My Bookmarks</h2>
+                {% if user_info.user_profile.bookmarks is not empty %}
+                    {% for type, bookmarks in user_info.user_profile.bookmarks %}
+                        <h4>{{ type }}</h4>
+                        {% for bookmark in bookmarks %}
+                            <a href="{{ bookmark.path }}">{{ bookmark.title }}</a>
+                            <br />
+                        {% endfor %}
+                        <br />
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="cols cols-lg-6 cols-md-12 cols-sm-12">
+                <h2>My Favorites</h2>
+                {% if user_info.user_profile.likes is not empty %}
+                    {% for type, likes in user_info.user_profile.likes %}
+                        <h4>{{ type }}</h4>
+                        {% for like in likes %}
+                            <a href="{{ like.path }}">{{ like.title }}</a>
+                            <br />
+                        {% endfor %}
+                        <br />
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endif %}

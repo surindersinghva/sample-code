@@ -1,0 +1,151 @@
+{# Refer to Altarum Custom Form Module for Variables Output #} {% if
+output.job_card.type == 'job_post' or output.job_card.type ==
+'self_directed_job_post' %}
+<div class="table-row job-card">
+  <div class="table-row">
+    <div class="table-cell w75">
+      <div class="views-field views-field-title">
+        {% if output.job_card.status is not empty and output.job_card.status == 0 %}
+          <p style="color: darkred"><strong>Unpublished</strong></p>
+        {% endif %}      
+        {% if output.job_card.employer is not empty %}
+        <p class="tabindex">
+          <strong>
+            {% if output.job_card.type == 'job_post' %}
+            <a href="/employer-profile/{{ output.job_card.employer.pid }}">
+              {{ output.job_card.employer.provider_name }}
+              <i title="Contact Card" class="fas fa-address-card"></i>
+            </a>
+            {% endif %} {% if output.job_card.type == 'self_directed_job_post'
+            %}
+            <a href="/employer-sd-profile/{{ output.job_card.employer.pid }}">
+              {{ output.job_card.employer.provider_name }}
+              <i title="Contact Card" class="fas fa-address-card"></i>
+            </a>
+            {% endif %}
+            <br />
+            Job ID: {{ output.job_card.job_id }}
+          </strong>
+        </p>
+        {% endif %}
+        <h2 class="tabindex">
+          <a
+            href="{{ output.job_card.path }}"
+            data-id="{{ output.resource_card.nid }}"
+            data-type="nid"
+            >{{ output.job_card.title }}</a
+          >
+        </h2>
+      </div>
+      <div class="views-field views-field-field-resource-type">
+        <h3 class="tabindex">
+          <span>Number of Positions Available:</span>
+          {{ output.job_card.field_number_of_positions }}
+        </h3>
+      </div>
+      {% if output.job_card.field_availability is not empty %}
+      <div class="views-field views-field-field-resource-type">
+        <h3 class="tabindex">
+          {% set availability = output.job_card.field_availability | join(', ')
+          %}
+          <span>Job Type:</span> {{ availability }}
+        </h3>
+      </div>
+      {% endif %} {% if output.job_card.work_location is not empty %}
+      <div class="views-field views-field-field-resource-type">
+        <h3 class="tabindex">
+          <span>Work Location:</span> {{ output.job_card.work_location.city }}
+          {{ output.job_card.work_location.zip_code }}
+        </h3>
+      </div>
+      {% endif %} {% if output.job_card.employer is not empty %}
+      <div class="views-field views-field-field-resource-type">
+        <h3 class="tabindex">
+          <span>Location:</span> {{ output.job_card.employer.field_city }}
+          {{ output.job_card.employer.field_zip_code }}
+        </h3>
+      </div>
+      {% endif %} {% if output.job_card.field_type_of_care_needed is not empty
+      %}
+      <div class="views-field views-field-field-resource-type">
+        <h3 class="tabindex">
+          <span>Type of Services Needed:</span>
+        </h3>
+        <ul>
+          {% for type_of_care_needed in
+          output.job_card.field_type_of_care_needed %}
+          <li>{{ type_of_care_needed }}</li>
+          {% endfor %} {% if output.job_card.field_job_requirements_add is not
+          empty %}
+          <li>{{ output.job_card.field_job_requirements_add | raw }}</li>
+          {% endif %}
+        </ul>
+      </div>
+      {% endif %} {% if output.job_card.field_minimum_qualifications is not
+      empty %}
+      <div class="views-field views-field-field-resource-type">
+        <h3 class="tabindex">
+          <span>Minimum Qualification/Requirements:</span>
+        </h3>
+        <ul>
+          {% for minimum_qualifications in
+          output.job_card.field_minimum_qualifications %}
+          <li>{{ minimum_qualifications }}</li>
+          {% endfor %} {% if output.job_card.field_min_qualification_add is not
+          empty %}
+          <li>
+            {{ output.job_card.field_min_qualification_add | raw }}
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+      {% endif %} {% if output.job_card.credentials is not empty %}
+      <div class="views-field views-field-field-resource-type">
+        <h3 class="tabindex">
+          <span>Credentials:</span> {{ output.job_card.credentials }}
+        </h3>
+      </div>
+      {% endif %} {% if output.job_card.field_language_preference is not empty
+      %} {% set language_preference = output.job_card.field_language_preference
+      | join(', ') %}
+      <div class="views-field views-field-field-resource-type">
+        <h3 class="tabindex">
+          <span>Language Preferences:</span> {{ language_preference }}
+        </h3>
+      </div>
+      {% endif %} {% if output.job_card.field_other_language_s_ is not empty %}
+      <div class="views-field views-field-field-resource-type">
+        <h3 class="tabindex">
+          <span>Other Language Preferences:</span>
+          {{ output.job_card.field_other_language_s_ }}
+        </h3>
+      </div>
+      {% endif %}
+      <a
+        href="{{ output.job_card.path }}"
+        data-id="{{ output.resource_card.nid }}"
+        data-type="nid"
+      >
+        more...
+      </a>
+      <p>&nbsp;</p>
+    </div>
+    <div class="table-cell w25">
+      <div class="jc-btn-wrapper">
+        <div class="action-buttons">
+          {{ output.like_form }}
+          {{ output.fav_form }}
+        </div>
+        <a
+          href="{{ output.job_card.path }}"
+          data-id="{{ output.resource_card.nid }}"
+          data-type="nid"
+          class="btn btn-rounded"
+        >
+          View Details
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
